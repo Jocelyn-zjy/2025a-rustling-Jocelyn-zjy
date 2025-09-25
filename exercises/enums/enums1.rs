@@ -18,3 +18,4 @@ fn main() {
     println!("{:?}", Message::Move { x: 10, y: 30 });
     println!("{:?}", Message::ChangeColor(200, 255, 255));
 }
+//111222
