@@ -29,6 +29,7 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
+// 修复Default trait的实现
 impl<T> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
@@ -69,15 +70,44 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    // 实现merge方法，合并两个有序链表
+    pub fn merge(list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self 
+    where
+        T: Ord + Clone,
+    {
+        let mut result = LinkedList::new();
+        
+        // 将两个链表的元素收集到向量中以便排序
+        let mut elements = Vec::new();
+        
+        // 收集第一个链表的元素
+        let mut current = list_a.start;
+        while let Some(node_ptr) = current {
+            unsafe {
+                elements.push((*node_ptr.as_ptr()).val.clone());
+                current = (*node_ptr.as_ptr()).next;
+            }
         }
-	}
+        
+        // 收集第二个链表的元素
+        current = list_b.start;
+        while let Some(node_ptr) = current {
+            unsafe {
+                elements.push((*node_ptr.as_ptr()).val.clone());
+                current = (*node_ptr.as_ptr()).next;
+            }
+        }
+        
+        // 对元素进行排序
+        elements.sort();
+        
+        // 将排序后的元素添加到结果链表中
+        for element in elements {
+            result.add(element);
+        }
+        
+        result
+    }
 }
 
 impl<T> Display for LinkedList<T>
